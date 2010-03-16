@@ -60,7 +60,7 @@ class Orb:
         self.serial.write('~I')
         data = self.serial.readline()
         # See info() for the response format.
-        return data[6:14]
+        return data[6:15]
         
     def info(self):
         """returns a tuple: (Serial #, Brightness, IgnorePager, Copyright)"""
@@ -71,16 +71,17 @@ class Orb:
         1       I  (uppercase 'I' -- ASCII 73) 
         2,3     product ID Currently 4266 
         4,5     version ID Currently 4116 
-        6-14    serial number 9 digit serial number. 
-        15-21   internal data internal 
-        22      Current brightness 0 - dim, 1 - medium, 2 - bright 
-        23      num pages received (zero) not implemented 
-        24      ignore pager data 'T' for true, 'F' for false 
-        25      premium capcode, private 'T' for true, 'F' for false 
-        26 - 27 internal data internal data 
-        28 ...  Copywrite string (c)2003 Amb Dev, Orb 2.0b
+        6-15    serial number 9 digit serial number. 
+        16-21   internal data internal 
+        23      Current brightness 0 - dim, 1 - medium, 2 - bright 
+        24      num pages received (zero) not implemented 
+        25      ignore pager data 'T' for true, 'F' for false 
+        26      premium capcode, private 'T' for true, 'F' for false 
+        27 - 28 internal data internal data 
+        29 ...  Copywrite string (c)2003 Amb Dev, Orb 2.0b
+                (null-terminated)
         """
-        return (data[6:14], data[22], data[24] == 'T', data[28:-2])
+        return (data[6:15], ord(data[23]), data[25] == 'T', data[29:-1])
         
     def allow_local_control(self, allow=True):
         # TODO: start/stop polling here
